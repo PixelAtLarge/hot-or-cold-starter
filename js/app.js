@@ -42,9 +42,9 @@ $(document).ready(function(){
 	function guessFeedback(){
 		var guess = $("#guessList").children().first();
 		if (guess == secretnumber) {
-			$("#feedback").replaceWith("You guessed the number!")
+			$("#feedback").replaceWith("<h2 id='feedback'>You guessed the number!</h2>")
 		} else{};
-			$("#feedback").replaceWith("You did NOT guess the number!")
+			$("#feedback").replaceWith("<h2 id='feedback'>You did NOT guess the number!</h2>")
 	}
 
 	function randomIntFromInterval(min,max){
