@@ -13,6 +13,8 @@ $(document).ready(function(){
 
 	var newCount = 0;
 
+	var guess;
+
 	/*--- Save random number as the secret number ---*/
   var min = 1,
   		max = 100;
@@ -31,28 +33,73 @@ $(document).ready(function(){
 	  	$("#feedback").text("Enter a guess between 0 and 100");
 	  	$("#userGuess").val("");
 	  } else {
-		  // var newCount;
-		  postGuess();
-		  guessFeedback();
+		  displayGuess();
+		  if (newCount == 1){
+		  	guessFeedback();
+		  } else {
+		  	prevGuess();
+		  }
 		  $("#userGuess").val("");
 	  }
 	});
 
 	/*--- List out guess ---*/
-	function postGuess () {
-		var guess = $("<li>" + $("#userGuess").val() + "</li>");
+	function displayGuess () {
+		guess = $("<li>" + $("#userGuess").val() + "</li>");
 		$("#guessList").prepend(guess);
 		newCount++;
 		$("#count").text(newCount);
 		console.log(newCount);
 	}
 
+	/*--- Compare to previous guess ---*/
+	function prevGuess(){
+		var previousGuess = $("#guessList").find("li").first().next();
+		previousGuess = $(previousGuess[0]).text();
+		// console.log("your previous guess is" + previousGuess);
+		guess = $("#guessList").children().first().text();
+		if (guess == secretnumber) {
+			$("#feedback").text("You guessed the correct number!");
+		} else if (previousGuess == guess) {
+				$("#feedback").text("Your most recent and previous guesses are the same number and distance from the secret number");
+		} else if (guess > secretnumber && previousGuess > secretnumber && guess > previousGuess) {
+			$("#feedback").text("You're getting colder!");
+		} else if (guess > secretnumber && previousGuess > secretnumber && guess < previousGuess) {
+			$("#feedback").text("You're getting hotter!");
+		} else if (guess > secretnumber && previousGuess < secretnumber) {
+			var differencePrevious = secretnumber - previousGuess;
+			var differenceRecent = guess - secretnumber;
+			if (differencePrevious < differenceRecent) {
+				$("#feedback").text("You're getting colder!");
+			} else if (differencePrevious > differenceRecent) {
+				$("#feedback").text("You're getting hotter!");
+			} else {
+				$("#feedback").text("Your most recent and previous guesses are the same distance from the secret number");
+			}
+		} else if (guess < secretnumber && previousGuess > secretnumber) {
+			var differencePrevious = previousGuess - secretnumber;
+			var differenceRecent = secretnumber - guess;
+			if (differencePrevious < differenceRecent) {
+				$("#feedback").text("You're getting colder!");
+			}
+			else if (differencePrevious > differenceRecent) {
+				$("#feedback").text("You're getting hotter!");
+			}
+			else {
+				$("#feedback").text("Your most recent and previous guesses are the same distance from the secret number");
+			}
+		} else if (guess < secretnumber && previousGuess < secretnumber && guess > previousGuess) {
+			$("#feedback").text("You're getting hotter!");
+		} else if (guess < secretnumber && previousGuess < secretnumber && guess < previousGuess) {
+			$("#feedback").text("You're getting colder!");
+		}
+	}
+
 	/*--- Feedback on guess ---*/
 	function guessFeedback(){
-		var guess = $("#guessList").children().first().text();
+		guess = $("#guessList").children().first().text();
 		console.log("secretnumber:" + secretnumber + " guess:" + guess);
 		if (guess == secretnumber) {
-			// console.log("you got it right");
 			$("#feedback").text("You guessed the correct number!");
 		} else if (guess > secretnumber) {
 			if (guess - secretnumber > 0 && guess - secretnumber < 11) {
